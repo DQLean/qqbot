@@ -1,3 +1,6 @@
+## 中文readme
+[readme-zh.md](./readme-zh.md)
+
 ## Background
 no background
 
