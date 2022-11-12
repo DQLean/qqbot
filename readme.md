@@ -27,6 +27,7 @@ The plug-in file is written by the js file. A function named main needs to be de
 The main function can accept the parameter config. The config parameter structure is shown below
 The main function returns a message reply parameter object, which consists of a test attribute and an action function. See the following for the detailed structure
 The main function does not return anything. At this time, the main function is used as an action function. All message retrieval and reply operations must be manually called by the plug-in. The parameters required for the operation are in config
+Finally, you need to use the commonJS export, module.exports=main, export the main function as a module
 #### Usage
 ```javascript
 function main() {
@@ -94,7 +95,7 @@ type pluginOptions = {
 
 ## Schedules
 A timed task is a timed trigger event supported by node schedule, which is triggered and executed at a specific time
-As with plug-ins, you need a main function as the entry, and you also need to use the module Exports=mainExport it
+As with plug-ins, you need a main function as the entry, and you also need to use the module.exports=main to Export it
 The main function must have a return value and be the standard timed task configuration object. See the following for the detailed structure
 If main does not return anything, this function will not be triggered as a scheduled task!
 The main function is different from the plug-in. The main function of the scheduled task does not receive any parameters, and the config function will be received by the action function!
