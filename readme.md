@@ -145,7 +145,7 @@ type Libs = { [key: string]: any }
 /** Message reply plug-in plugins return value specification */
 type AnswerResponse = string | Array<string | segmentElement> | void
 ```
-### main函数返回值
+### main response
 ```typescript
 type scheduleOptions = {
   date?: {
