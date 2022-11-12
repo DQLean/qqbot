@@ -41,6 +41,7 @@ function main() {
 function action(config) {
   return "Me too!"
 }
+module.exports = main
 ```
 
 ### Config
