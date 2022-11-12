@@ -56,13 +56,13 @@ type AnswerConfig = {
   handle?: (answer: AnswerResponse) => void
 }
 /** Message Event */
-export type MessageEvent = oicq.GroupMessageEvent | oicq.PrivateMessageEvent | oicq.DiscussMessageEvent
+type MessageEvent = oicq.GroupMessageEvent | oicq.PrivateMessageEvent | oicq.DiscussMessageEvent
 /** Message Source Object */
-export type Target = oicq.Group | oicq.Friend | oicq.Member | oicq.User | oicq.Discuss
+type Target = oicq.Group | oicq.Friend | oicq.Member | oicq.User | oicq.Discuss
 /** Library objects mounted on client */
-export type Libs = { [key: string]: any }
+type Libs = { [key: string]: any }
 /** Message reply plug-in plugins return value specification */
-export type AnswerResponse = string | Array<string | segmentElement> | void
+type AnswerResponse = string | Array<string | segmentElement> | void
 ```
 ### main response
 ```typescript
@@ -139,11 +139,11 @@ type scheduleConfig = {
   handle?: (answer: AnswerResponse) => void
 }
 /** Message Source Object */
-export type Target = oicq.Group | oicq.Friend | oicq.Member | oicq.User | oicq.Discuss
+type Target = oicq.Group | oicq.Friend | oicq.Member | oicq.User | oicq.Discuss
 /** Library objects mounted on client */
-export type Libs = { [key: string]: any }
+type Libs = { [key: string]: any }
 /** Message reply plug-in plugins return value specification */
-export type AnswerResponse = string | Array<string | segmentElement> | void
+type AnswerResponse = string | Array<string | segmentElement> | void
 ```
 ### main函数返回值
 ```typescript

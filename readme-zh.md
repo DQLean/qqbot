@@ -53,13 +53,13 @@ type AnswerConfig = {
   handle?: (answer: AnswerResponse) => void
 }
 /** 消息事件 */
-export type MessageEvent = oicq.GroupMessageEvent | oicq.PrivateMessageEvent | oicq.DiscussMessageEvent
+type MessageEvent = oicq.GroupMessageEvent | oicq.PrivateMessageEvent | oicq.DiscussMessageEvent
 /** 消息来源对象 */
-export type Target = oicq.Group | oicq.Friend | oicq.Member | oicq.User | oicq.Discuss
+type Target = oicq.Group | oicq.Friend | oicq.Member | oicq.User | oicq.Discuss
 /** client挂载的库对象 */
-export type Libs = { [key: string]: any }
+type Libs = { [key: string]: any }
 /** 消息回复插件plugins返回值规范 */
-export type AnswerResponse = string | Array<string | segmentElement> | void
+type AnswerResponse = string | Array<string | segmentElement> | void
 ```
 ### main函数返回值
 ```typescript
@@ -135,11 +135,11 @@ type scheduleConfig = {
   handle?: (answer: AnswerResponse) => void
 }
 /** 消息来源对象 */
-export type Target = oicq.Group | oicq.Friend | oicq.Member | oicq.User | oicq.Discuss
+type Target = oicq.Group | oicq.Friend | oicq.Member | oicq.User | oicq.Discuss
 /** client挂载的库对象 */
-export type Libs = { [key: string]: any }
+type Libs = { [key: string]: any }
 /** 消息回复插件plugins返回值规范 */
-export type AnswerResponse = string | Array<string | segmentElement> | void
+type AnswerResponse = string | Array<string | segmentElement> | void
 ```
 ### main函数返回值
 ```typescript
