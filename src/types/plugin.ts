@@ -8,10 +8,10 @@ export type pluginOptions = {
      * 在atme为true时无效
      * 不需要则直接忽略
      */
-    prefix?: string,
-    /** 检索匹配的文本内容，可为数组 */
-    text: string | string[],
-    /** 是否为全字匹配，在atme为true时无效 */
+    prefix?: string | RegExp,
+    /** 检索匹配的文本内容，可为数组。如果是值为正则，则直接用该值匹配 */
+    text: string | RegExp | Array<string> | Array<RegExp>,
+    /** 是否为全字匹配，在atme为true时无效，在text为正则时无效 */
     wholeWord?: boolean,
     /** 成功匹配是否忽略其他插件(插件执行先后是有文件目录名称排序的) */
     skip?: boolean

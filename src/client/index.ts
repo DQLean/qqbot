@@ -9,7 +9,7 @@ import * as oicq from "oicq";
 import md5 from 'md5';
 import * as Schedule from 'node-schedule'
 import defaultConfig from '../assets/config.json'
-import { readDir, createDir } from '../utils/tools'
+import { readDir, createDir, testMessage, testPrefix, matchPrefix } from '../utils/tools'
 import * as cheerio from 'cheerio'
 import * as axios from 'axios'
 import * as Types from '../types/index'
@@ -114,36 +114,43 @@ class Client {
                 if (test.atme && config.event.message_type === "group" && !config.event.atme) return
                 if (test.prefix && !test.atme) {
                   /** 前缀 */
-                  const prefixReg = new RegExp("^" + test.prefix, "i")
-                  if (!prefixReg.test(config.event.raw_message)) return
+                  if (!testPrefix(config.event.raw_message, test.prefix)) return
                 }
                 if (test.wholeWord && !test.atme) {
                   /** 全字匹配 */
                   if (Array.isArray(test.text)) {
                     /** 数组text */
-                    const isMatch: boolean = test.text.some((item: string) => {
-                      if (test.prefix + item === config.event.raw_message) return true
-                      else return false
+                    const isMatch: boolean = test.text.some((item: string | RegExp) => {
+                      if (typeof item === "string") {
+                        /** 如果text是string就全字匹配 */
+                        return item === matchPrefix(config.event.raw_message, test.prefix)
+                      } else {
+                        /** 否则忽略全字匹配 */
+                        return testMessage(item, config.event.raw_message, test.prefix)
+                      }
                     })
                     if (!isMatch) return
                   } else {
                     /** 单个text */
-                    if (test.prefix + test.text !== config.event.raw_message) return
+                    if (typeof test.text === "string") {
+                      /** 如果text是string就全字匹配 */
+                      if (test.text !== matchPrefix(config.event.raw_message, test.prefix)) return
+                    } else {
+                      /** 否则忽略全字匹配 */
+                      if (!testMessage(test.text, config.event.raw_message, test.prefix)) return
+                    }
                   }
                 } else {
                   /** 匹配 */
                   if (Array.isArray(test.text)) {
                     /** 数组text */
-                    const isMatch: boolean = test.text.some((item: string) => {
-                      const textReg = new RegExp(test.prefix + item, "gi")
-                      if (textReg.test(config.event.raw_message)) return true
-                      else return false
+                    const isMatch: boolean = test.text.some((item: string | RegExp) => {
+                      return testMessage(item, config.event.raw_message, test.prefix)
                     })
                     if (!isMatch) return
                   } else {
                     /** 单个text */
-                    const textReg = new RegExp(test.prefix + test.text, "gi")
-                    if (!textReg.test(config.event.raw_message)) return
+                    if (!testMessage(test.text, config.event.raw_message, test.prefix)) return
                   }
                 }
                 const message: Types.AnswerResponse | Promise<any> = action(config)

@@ -74,9 +74,9 @@ type pluginOptions = {
      * Invalid when atme is true
      * Ignore if not needed
      */
-    prefix?: string,
+    prefix?: string | RegExp,
     /** matching text content, Can be an array */
-    text: string | string[],
+    text: string | RegExp | Array<string> | Array<RegExp>,
     /** Whether it is a whole word match. It is invalid when atme is true */
     wholeWord?: boolean,
     /** Succeeded in matching whether to ignore other plugins (plug-ins are executed in the order of file directory names) */

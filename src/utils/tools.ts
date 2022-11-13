@@ -52,3 +52,42 @@ export const createDir = (dirPATH: string, logger?: Logger): void => {
     }
   } catch { }
 }
+
+/** 正则检索前缀 */
+export const testPrefix = (message: string, prefix?: string | RegExp): boolean => {
+  if(!prefix) return true
+  if (typeof prefix === "string") {
+    const prefixReg: RegExp = new RegExp("^" + prefix, "i")
+    if (!prefixReg.test(message)) return false
+    else return true
+  } else {
+    if (!prefix.test(message)) return false
+    else return true
+  }
+}
+
+/** 正则过滤前缀 */
+export const matchPrefix = (message: string, prefix?: string | RegExp): string => {
+  if (!prefix) return message
+  let msg: string = message
+  if (typeof prefix === "string") {
+    const prefixReg: RegExp = new RegExp("^" + prefix, "i")
+    return msg.replace(prefixReg, "")
+  } else {
+    return msg.replace(prefix, "")
+  }
+}
+
+/** 正则检索消息 */
+export const testMessage = (text: string | RegExp, message: string, prefix?: string | RegExp): boolean => {
+  if (typeof text === "string") {
+    /** string类型 */
+    const textReg = new RegExp(text, "gi")
+    if (textReg.test(matchPrefix(message, prefix))) return true
+    else return false
+  } else {
+    /** 正则类型 */
+    if (text.test(matchPrefix(message, prefix))) return true
+    else return false
+  }
+}
