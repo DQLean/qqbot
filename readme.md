@@ -80,7 +80,13 @@ type pluginOptions = {
     /** Whether it is a whole word match. It is invalid when atme is true */
     wholeWord?: boolean,
     /** Succeeded in matching whether to ignore other plugins (plug-ins are executed in the order of file directory names) */
-    skip?: boolean
+    skip?: boolean,
+    /** Whether to use callback to execute action function
+      * It means that the action of this plug-in will be executed after all non callback plug-ins are executed
+      * If a non callback plug-in executes the skip option, it will not only skip other plug-ins, but will not execute any callback plug-ins
+      * The plug-in functions in the callback pool also have the skip option
+      */
+    isHook?: boolean
   },
   /**Plug in function execution function
    * There are three return values

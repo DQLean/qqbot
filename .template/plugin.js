@@ -22,7 +22,8 @@ function main() {
       prefix: "#",
       text: "test",
       wholeWord: false,
-      skip: false
+      skip: false,
+      isHook: false
     },
     action
   }

@@ -77,7 +77,13 @@ type pluginOptions = {
     /** 是否为全字匹配，在atme为true时无效 */
     wholeWord?: boolean,
     /** 成功匹配是否忽略其他插件(插件执行先后是有文件目录名称排序的) */
-    skip?: boolean
+    skip?: boolean,
+    /** 是否使用回调的方式执行action函数
+     * 意思是这个插件的action会在所有非回调插件执行完后再执行
+     * 如果非回调插件执行了skip选项，则不仅会跳过其他插件，而且不会执行任何回调插件
+     * 回调池中的插件函数也拥有skip选项
+     */
+    isHook?: boolean
   },
   /** 插件功能执行函数
    * 返回值有三种

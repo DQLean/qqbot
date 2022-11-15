@@ -29,6 +29,8 @@ class Client {
   readonly client: oicq.Client
   readonly logger: oicq.Logger
 
+  private pluginsHooks: Array<Function> = []
+
   private pluginStatus: boolean = false
   private scheduleStatus: boolean = false
 
@@ -80,6 +82,7 @@ class Client {
     createDir(pluginPATH, this.logger)
 
     const plugins: Types.Dirs = readDir(pluginPATH, { readDirectory: true, directoryTree: false })
+
     /** 循环添加插件 */
     for (let plugin in plugins) {
       let pluginName: string = path.basename(plugin)
@@ -95,17 +98,18 @@ class Client {
       if (process.env.NODE_ENV === "production" || process.env.NODE_ENV === "development") main = eval(`require(plugin)`)
       else main = (await import(plugin)).default
       this.plugins[pluginName] = (config: Types.AnswerConfig) => {
-        return (function (logger: oicq.Logger) {
+        return (function (logger: oicq.Logger, pluginsHooks: Array<Function>) {
           /** try捕获错误防止插件js内容报错 */
           try {
             /** 运行并接收main函数的返回值
              * main函数可以返回一个标准的插件参数对象，或者不返回任何东西
              * 当返回对象时，客户端会接管判断消息内容是否可回答的任务，并在可回答时调用action函数
-             * 当没有返回值时，main函数作为action函数的功能，判断是否回答的任务需要插件在main函数中自己编写
+             * 当没有返回值或返回boolean时，main函数作为action函数的功能，判断是否回答的任务需要插件在main函数中自己编写，
+             * 同时该返回值作为skip参数判断是否跳过其他
              */
             let pluginOptions: Types.pluginOptions = main(config)
             /** 判断main函数是否有返回值 */
-            if (pluginOptions !== void 0) {
+            if (pluginOptions !== void 0 && typeof pluginOptions !== "boolean") {
               const { test, action } = pluginOptions
               if (!action) return
               if (!test) action(config)
@@ -153,17 +157,28 @@ class Client {
                     if (!testMessage(test.text, config.event.raw_message, test.prefix)) return
                   }
                 }
+                /** 是否为回调 */
+                if (test.isHook) {
+                  pluginsHooks.push(() => {
+                    const message: Types.AnswerResponse | Promise<any> = action(config)
+                    if (typeof message === "string" || Array.isArray(message)) config.target.sendMsg(message)
+                    if (test.skip) return true
+                  })
+                  return
+                }
                 const message: Types.AnswerResponse | Promise<any> = action(config)
                 /** 当返回值为string或array时由客户端接管发送消息的任务，消息为返回值 */
                 if (typeof message === "string" || Array.isArray(message)) config.target.sendMsg(message)
                 /** 是否跳过其他插件 */
                 if (test.skip) return true
               }
+            } else {
+              return pluginOptions
             }
           } catch (err) {
             logger.error(err)
           }
-        })(this.logger);
+        })(this.logger, this.pluginsHooks);
       }
     }
 
@@ -373,11 +388,24 @@ class Client {
     }
 
     config.handle = answerHandle
-
+    /** 初始化hook池 */
+    this.pluginsHooks = []
+    /** 正常遍历插件 */
     for (let key in this.plugins) {
       const isSkip: boolean | void = this.plugins[key](config)
+      if (isSkip) {
+        /** 如果有插件执行跳过选项，则清空hook并退出 */
+        this.pluginsHooks = []
+        return
+      }
+    }
+    /** 开始回调hook池 */
+    for (let hook of this.pluginsHooks) {
+      const isSkip: boolean | void = hook()
       if (isSkip) break
     }
+    /** 清空hook池 */
+    this.pluginsHooks = []
   }
 
   onMessage() {

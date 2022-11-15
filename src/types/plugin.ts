@@ -14,7 +14,9 @@ export type pluginOptions = {
     /** 是否为全字匹配，在atme为true时无效，在text为正则时无效 */
     wholeWord?: boolean,
     /** 成功匹配是否忽略其他插件(插件执行先后是有文件目录名称排序的) */
-    skip?: boolean
+    skip?: boolean,
+    /** 是否使用回调的方式执行action函数（意思就是将其放置最后执行） */
+    isHook?: boolean
   },
   /** 插件功能执行函数
    * 返回值有三种
